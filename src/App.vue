@@ -1,17 +1,23 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js app"/>
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <countriesGrid></countriesGrid>    
+    <countryDetail></countryDetail>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+import countriesGrid from './components/countriesGrid.vue'
+import countryDetail from './components/countryDetail.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    // HelloWorld
+    countriesGrid,
+    countryDetail
   }
 }
 </script>
