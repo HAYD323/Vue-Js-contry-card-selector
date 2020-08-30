@@ -2,7 +2,6 @@
     <section>
         <form>
             <input v-model="filterString"
-            v-bind:title="userProvidedString"
              placeholder="Search for country">
              <br />
             {{countryFilterString}}
@@ -16,8 +15,9 @@
             v-bind:iso="item.alpha3Code"
             v-on:click="toggleModel">
 
-            <img :src="item.flag"> 
-            
+            <img :src="item.flag"
+                :alt="item.name + '\'s Flag'"> 
+
             </li>
         </ul>
     </section>
@@ -31,16 +31,12 @@ export default {
   name: 'countriesGrid',
   data: function() {
     return {
-      countries: null,
-      countryFilterString: ''
+    //   countries: null,
+      countryFilterString: '',
     }
   },
-  created: function() {
-    var vm = this;
-      countryService.get()
-      .then(function(data){
-        vm.countries = data;
-      })
+  props: {
+    countries: Object
   },
   computed: {
       filterString: {
