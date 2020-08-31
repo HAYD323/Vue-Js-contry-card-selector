@@ -29,8 +29,11 @@ export default new class {
                         .some(x => x.indexOf(filterString.toLowerCase()) > -1 )
                     );
         } else {
-            console.log("serviceFilter:", filterString.alpha3Code);
-            output = countryArray.filter(item => item.alpha3Code.indexOf(filterString.alpha3Code) > -1);
+            if (filterString.alpha3Code != null || filterString.alpha3Code != undefined || filterString.alpha3Code === ''){
+                output = countryArray.filter(item => item.alpha3Code.indexOf(filterString.alpha3Code) > -1);
+            } else {
+                throw "Object alpha3Code missing, null or empty"
+            }
         }
 
 

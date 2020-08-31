@@ -4,7 +4,7 @@
         <div v-show="!showDetailed">
             <form>
                 <input v-model="filterString"
-                v-on:keydown="sanitiseUserInput(event)"
+                v-on:keydown="sanitizeKeydown($event)"
                 placeholder="Search for country">
                 <br />
                 {{countryFilterString}}
@@ -16,7 +16,7 @@
                 v-for="(item, index) in filterCountries(countryFilterString)" 
                 v-bind:key="index"
                 v-bind:iso="item.alpha3Code"
-                v-on:click="selectItem(item)">
+                v-on:click="findSelectItem(item)">
 
                 <img :src="item.flag"
                     :alt="item.name + '\'s Flag'"> 
@@ -80,7 +80,7 @@ export default {
       filterCountries: function(filterstring) {
           return countryService.filter(this.countries,filterstring);
       },
-      selectItem: function(itemObj){
+      findSelectItem: function(itemObj){
           this.selectedItem = countryService.filter(this.countries,itemObj)[0]; 
           this.toggleModel();         
       },
