@@ -1,42 +1,51 @@
 <template>
     <section>
-        <form>
-            <input v-model="filterString"
-             placeholder="Search for country">
-             <br />
-            {{countryFilterString}}
-        </form>
-        <ul v-if="countries"
-         class="grid-container">
+        <countryDetailed :item="selectedItem" v-if="showDetailed" v-on:closeModel="toggleModel('close')"></countryDetailed>
+        <div v-show="!showDetailed">
+            <form>
+                <input v-model="filterString"
+                v-on:keydown="sanitiseUserInput(event)"
+                placeholder="Search for country">
+                <br />
+                {{countryFilterString}}
+            </form>
+            <ul v-if="countries"
+            class="grid-container">
 
-            <li class="grid-item" 
-            v-for="(item, index) in filterCountries(countryFilterString)" 
-            v-bind:key="index"
-            v-bind:iso="item.alpha3Code"
-            v-on:click="toggleModel">
+                <li class="grid-item" 
+                v-for="(item, index) in filterCountries(countryFilterString)" 
+                v-bind:key="index"
+                v-bind:iso="item.alpha3Code"
+                v-on:click="selectItem(item)">
 
-            <img :src="item.flag"
-                :alt="item.name + '\'s Flag'"> 
+                <img :src="item.flag"
+                    :alt="item.name + '\'s Flag'"> 
 
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
     </section>
 </template>
 
 
 <script>
 import countryService from  '../services/countryService';
+import countryDetailed from './countryDetail.vue';
 
 export default {
   name: 'countriesGrid',
+  components: {
+      countryDetailed
+  },
   data: function() {
     return {
-    //   countries: null,
+      countries: null,
       countryFilterString: '',
+      showDetailed: false
     }
   },
   props: {
-    countries: Object
+    // countries: Array
   },
   computed: {
       filterString: {
@@ -48,20 +57,39 @@ export default {
           }
       }
   },
+  created: function() {
+    var vm = this;
+      countryService.get()
+      .then(function(data){
+        vm.countries = data;
+      })
+  },
   methods: {
+      sanitizeKeydown: function(e){
+          let regex = /[<>'()"]/;
+        if (regex.test(e.key)){
+            e.preventDefault();
+        }
+      },
       sanitiseUserInput: function(input) {
           let output = '',
               regex = /[<>'()"]/gi;
             output = input.replace(regex,'');
-            console.log('sanitize: ', input, output);
           return output;
       },
       filterCountries: function(filterstring) {
-          console.log("start", filterstring.length, this.countries);
           return countryService.filter(this.countries,filterstring);
       },
-      toggleModel: function() {
-
+      selectItem: function(itemObj){
+          this.selectedItem = countryService.filter(this.countries,itemObj)[0]; 
+          this.toggleModel();         
+      },
+      toggleModel: function(state) {
+            if (state === "close") {
+                this.showDetailed = false;
+            } else {
+                this.showDetailed = this.showDetailed != true ? true : false;
+            }
       }
   }
 }
@@ -70,25 +98,26 @@ export default {
 .grid-container {
 
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     align-items: flex-start;
-    flex-wrap: wrap;
     padding: 0;
     margin: 30px auto 0;
     width: 100%;
+    justify-content: center;
 
     .grid-item {
-        width: 25%;
-        height: 350px;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 10px;
         box-sizing: border-box;
         
         img {
-            max-width: 100%;
-            max-height: 100%;
-            display: inline;
-            text-align: center;
+            width: 250px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 25px;
+            border: solid thin black;
         }
     }
 }

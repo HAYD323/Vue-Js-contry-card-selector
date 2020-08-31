@@ -15,12 +15,26 @@ export default new class {
      * @param {string} filterString the filtering string
      */
     filter(countryArray, filterString) {
-        console.log('filter', countryArray.length, filterString, filterString.length);
+                                
         if (filterString.length == 0) {
             return countryArray;
         }
-        
-        return countryArray.filter(item => item.name.toLowerCase().indexOf(filterString.toLowerCase()) > -1 );
+        let output = [];
+
+        if (typeof filterString === "string") {
+
+         output = countryArray.filter(item => Object.values(item)
+                        .filter((x) => !(typeof x == "object" || typeof x == "number" || !x.indexOf("http") ) )
+                        .map((x) => x.toString().toLowerCase())
+                        .some(x => x.indexOf(filterString.toLowerCase()) > -1 )
+                    );
+        } else {
+            console.log("serviceFilter:", filterString.alpha3Code);
+            output = countryArray.filter(item => item.alpha3Code.indexOf(filterString.alpha3Code) > -1);
+        }
+
+
+        return output
     }
 
     get() {
