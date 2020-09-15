@@ -1,4 +1,4 @@
-# country-test
+# Vue JS rest Api SPA
 
 ## Project setup
 ```
